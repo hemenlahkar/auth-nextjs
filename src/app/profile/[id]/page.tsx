@@ -15,4 +15,4 @@ const UserProfile = async ({ params }: any) => {
   );
 };
 
-export default UserProfile; 
+export default UserProfile;
