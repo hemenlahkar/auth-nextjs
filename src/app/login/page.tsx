@@ -35,8 +35,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1 className="text-center text-white text-2xl">{loading ? "Logging in..." : "Login"}</h1>
+    <form className="flex flex-col items-center justify-center min-h-screen py-2">
+      <h1 className="text-center text-white text-2xl">
+        {loading ? "Logging in..." : "Login"}
+      </h1>
       <hr />
 
       <label htmlFor="email">email</label>
@@ -64,6 +66,6 @@ export default function LoginPage() {
         Login
       </button>
       <Link href="/signup">Visit signup page</Link>
-    </div>
+    </form>
   );
 }

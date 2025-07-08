@@ -40,7 +40,7 @@ export default function SignupPage() {
   }, [user]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <form className="flex flex-col items-center justify-center min-h-screen py-2">
       <h1 className="text-center text-white text-2xl">
         {loading ? "Signing up..." : "Signup"}
       </h1>
@@ -79,6 +79,6 @@ export default function SignupPage() {
         {buttonDisabled ? "Please fill all fields" : "Signup"}
       </button>
       <Link href="/login">Visit login page</Link>
-    </div>
+    </form>
   );
 }
