@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,8 +24,8 @@ export default function LoginPage() {
       setLoading(true);
       const response = await axios.post("/api/users/login", user);
       toast.success("Login successful! Redirecting...");
+      router.push("/profile");
       console.log(response.data);
-      router.push(`/profile`);
     } catch (error: any) {
       console.error("Login error:", error);
       toast.error(
@@ -63,7 +63,7 @@ export default function LoginPage() {
         onClick={onLogin}
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
       >
-        Login
+        {buttonDisabled ? "Please fill all fields" : "Login"}
       </button>
       <Link href="/signup">Visit signup page</Link>
     </form>

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 const ProfilePage = () => {
   const router = useRouter();
+  const [user, setUser] = React.useState({ username: "" });
   const handleLogout = async () => {
     try {
       const response = await axios.get("/api/users/logout");
@@ -19,11 +20,36 @@ const ProfilePage = () => {
     }
   };
 
+  const getUserData = async () => {
+    try {
+      const response = await axios.get("/api/users/me");
+      console.log(response.data);
+      setUser(response.data.user);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      await getUserData();
+      router.push(`/profile/${user.username}`);
+    };
+    try {
+      fetchData();
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+      toast.error("Failed to fetch profile data. Please try again.");
+      router.push("/login");
+    }
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-center text-white text-2xl">Profile</h1>
       <hr />
       <p className="text-center text-white">Welcome to your profile page!</p>
+      <h2 className="text-center">{user ? user.username : "Guest"}</h2>
       <hr />
       <button
         onClick={handleLogout}
