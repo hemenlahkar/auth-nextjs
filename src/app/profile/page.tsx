@@ -7,11 +7,10 @@ import { useRouter } from "next/navigation";
 
 const ProfilePage = () => {
   const router = useRouter();
-  const [user, setUser] = React.useState({ username: "" });
+  const [userData, setUserData] = React.useState({ username: "" });
   const handleLogout = async () => {
     try {
-      const response = await axios.get("/api/users/logout");
-      console.log(response.data);
+      await axios.get("/api/users/logout");
       toast.success("Logged out successfully!");
       router.push("/login");
     } catch (error) {
@@ -23,8 +22,8 @@ const ProfilePage = () => {
   const getUserData = async () => {
     try {
       const response = await axios.get("/api/users/me");
-      console.log(response.data);
-      setUser(response.data.user);
+      setUserData(response.data.user);
+      router.push(`/profile/${response.data.user.username}`);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -33,7 +32,6 @@ const ProfilePage = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       await getUserData();
-      router.push(`/profile/${user.username}`);
     };
     try {
       fetchData();
@@ -49,7 +47,7 @@ const ProfilePage = () => {
       <h1 className="text-center text-white text-2xl">Profile</h1>
       <hr />
       <p className="text-center text-white">Welcome to your profile page!</p>
-      <h2 className="text-center">{user ? user.username : "Guest"}</h2>
+      <h2 className="text-center">{userData ? userData.username : "Guest"}</h2>
       <hr />
       <button
         onClick={handleLogout}
