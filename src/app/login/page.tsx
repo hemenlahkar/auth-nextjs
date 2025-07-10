@@ -13,6 +13,7 @@ export default function LoginPage() {
   });
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [forgotPass, setForgotPass] = React.useState(false);
 
   React.useEffect(() => {
     const isUserValid = user.email && user.password;
@@ -31,41 +32,96 @@ export default function LoginPage() {
       toast.error(
         error.response?.data?.error || "An error occurred during login"
       );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/users/forgotpassword", {
+        params: {
+          email: user.email,
+        },
+      });
+      toast.success("Password reset link sent to your email!");
+      console.log(response.data);
+      setForgotPass(false);
+    } catch (error: any) {
+      console.error("Forgot password error:", error);
+      toast.error(
+        error.response?.data?.error || "An error occurred while resetting password"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1 className="text-center text-white text-2xl">
-        {loading ? "Logging in..." : "Login"}
-      </h1>
-      <hr />
+    <>
+      {forgotPass ? (
+        <form className="flex flex-col items-center justify-center min-h-screen py-2">
+          <h1 className="text-center text-white text-2xl">
+            {loading ? "Resetting password..." : "Reset Password"}
+          </h1>
+          <hr />
+          <label htmlFor="email">email:</label>
+          <input
+            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-white"
+            id="email"
+            type="text"
+            value={user.email}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+            placeholder="Enter your email"
+          />
+          <button
+            onClick={handleForgotPassword}
+            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
+          >
+            Reset Password
+          </button>
+          <Link href="/login">Back to login</Link>
+        </form>
+      ) :(<form className="flex flex-col items-center justify-center min-h-screen py-2">
+        <h1 className="text-center text-white text-2xl">
+          {loading ? "Logging in..." : "Login"}
+        </h1>
+        <hr />
 
-      <label htmlFor="email">email</label>
-      <input
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-white"
-        id="email"
-        type="text"
-        value={user.email}
-        onChange={(e) => setUser({ ...user, email: e.target.value })}
-        placeholder="email"
-      />
-      <label htmlFor="password">password</label>
-      <input
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-white"
-        id="password"
-        type="password"
-        value={user.password}
-        onChange={(e) => setUser({ ...user, password: e.target.value })}
-        placeholder="password"
-      />
-      <button
-        onClick={onLogin}
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
-      >
-        {buttonDisabled ? "Please fill all fields" : "Login"}
-      </button>
-      <Link href="/signup">Visit signup page</Link>
-    </form>
+        <label htmlFor="email">email</label>
+        <input
+          className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-white"
+          id="email"
+          type="text"
+          value={user.email}
+          onChange={(e) => setUser({ ...user, email: e.target.value })}
+          placeholder="email"
+        />
+        <label htmlFor="password">password</label>
+        <input
+          className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-white"
+          id="password"
+          type="password"
+          value={user.password}
+          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          placeholder="password"
+        />
+        <button
+          onClick={onLogin}
+          className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
+        >
+          {buttonDisabled ? "Please fill all fields" : "Login"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setForgotPass(true)}
+          className="text-sm text-blue-500 hover:underline cursor-pointer mb-4"
+        >
+          Forgot password?
+        </button>
+        <Link href="/signup">Visit signup page</Link>
+      </form>)}
+    </>
   );
 }
